@@ -1,0 +1,66 @@
+{
+  "name": "wiprd-browser",
+  "version": "0.1.0",
+  "description": "WIPRD Browser - Zen-inspired Chromium browser with Containers, Profiles, Split View, and Multi-Provider AI Sidebar",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:all": "electron-builder --mac --win"
+  },
+  "keywords": [
+    "browser",
+    "electron",
+    "chromium",
+    "zen-browser",
+    "ai-browser"
+  ],
+  "author": "WIPRD",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.wiprd.browser",
+    "productName": "WIPRD Browser",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "icon": "src/assets/logo.jpg",
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "identity": null
+    },
+    "win": {
+      "icon": "src/assets/logo.jpg",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WIPRD Browser</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <!-- Top Titlebar / Navigation Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <img src="../assets/logo.jpg" alt="WIPRD" class="brand-logo" />
+        <button class="icon-btn" id="btnToggleSidebar" title="Modo Compacto (Zen)">☰</button>
+        <div class="nav-controls">
+          <button class="icon-btn" id="btnBack" title="Voltar">←</button>
+          <button class="icon-btn" id="btnForward" title="Avançar">→</button>
+          <button class="icon-btn" id="btnReload" title="Recarregar">↻</button>
+        </div>
+      </div>
+
+      <form class="url-bar-wrap" id="urlForm">
+        <span class="container-pill" id="activeContainerPill" title="Container atual">Default</span>
+        <input
+          type="text"
+          id="urlInput"
+          class="url-input"
+          placeholder="Pesquisar ou introduzir endereço..."
+          autocomplete="off"
+        />
+      </form>
+
+      <div class="topbar-right">
+        <button class="action-btn" id="btnSplitView" title="Split View (2 páginas lado a lado)">◫ Split</button>
+        <button class="action-btn ai-toggle-btn" id="btnToggleAI" title="Abrir AI Sidebar (Leo + Firefox)">✦ WIPRD AI</button>
+        <div class="window-controls">
+          <button class="win-btn" id="winMin" title="Minimizar">—</button>
+          <button class="win-btn" id="winMax" title="Maximizar">□</button>
+          <button class="win-btn win-close" id="winClose" title="Fechar">✕</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Body: Left Zen Sidebar + Center Viewport + Right AI Sidebar -->
+    <div class="main-body">
+      <!-- Left Vertical Sidebar (Zen Browser style) -->
+      <aside class="zen-sidebar" id="zenSidebar">
+        <!-- Profile & Container Selector -->
+        <div class="sidebar-section">
+          <div class="selector-row">
+            <label class="selector-label">Perfil</label>
+            <select id="profileSelect" class="zen-select">
+              <option value="personal">👤 Pessoal</option>
+              <option value="work">💼 Trabalho</option>
+              <option value="dev">🛠️ Dev</option>
+            </select>
+          </div>
+          <div class="selector-row">
+            <label class="selector-label">Container</label>
+            <select id="containerSelect" class="zen-select">
+              <option value="default">⚪ Default</option>
+              <option value="personal">🔵 Pessoal</option>
+              <option value="work">🟠 Trabalho</option>
+              <option value="banking">🟢 Bancos</option>
+              <option value="shopping">🟣 Compras</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Workspaces -->
+        <div class="workspaces-bar" id="workspacesBar">
+          <button class="workspace-btn active" data-ws="general" title="Geral">🌐</button>
+          <button class="workspace-btn" data-ws="work" title="Trabalho">💼</button>
+          <button class="workspace-btn" data-ws="research" title="Pesquisa">🔬</button>
+          <button class="workspace-btn" data-ws="media" title="Media">🎬</button>
+        </div>
+
+        <!-- Vertical Tabs -->
+        <div class="tabs-header">
+          <span>Separadores</span>
+          <button class="icon-btn small" id="btnNewTab" title="Novo Separador">+</button>
+        </div>
+        <div class="tab-list" id="tabList"></div>
+      </aside>
+
+      <!-- Center Browser Viewport -->
+      <main class="viewport-area" id="viewportArea">
+        <div class="pane primary-pane" id="primaryPane"></div>
+        <div class="pane secondary-pane hidden" id="secondaryPane"></div>
+      </main>
+
+      <!-- Right AI Sidebar (Brave Leo + Firefox Multi-AI style) -->
+      <aside class="ai-sidebar hidden" id="aiSidebar">
+        <div class="ai-header">
+          <div class="ai-title">
+            <span>✦ WIPRD AI</span>
+            <span class="ai-badge">Leo + Multi-AI</span>
+          </div>
+          <button class="icon-btn small" id="btnCloseAI" title="Fechar">✕</button>
+        </div>
+
+        <!-- Firefox-style AI Provider Picker -->
+        <div class="ai-config">
+          <label class="ai-label">Fornecedor de IA</label>
+          <select id="aiProvider" class="zen-select">
+            <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
+            <option value="openai">OpenAI (gpt-4o-mini)</option>
+            <option value="anthropic">Anthropic Claude (3.5 Sonnet)</option>
+            <option value="ollama">Ollama Local (llama3.2)</option>
+          </select>
+
+          <input
+            type="password"
+            id="aiApiKey"
+            class="ai-key-input"
+            placeholder="API Key (guardada localmente)"
+          />
+
+          <label class="ai-context-toggle">
+            <input type="checkbox" id="aiIncludePage" checked />
+            <span>Ler página aberta automaticamente</span>
+          </label>
+          <div class="ai-page-pill" id="aiPagePill">Página: Nenhuma</div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="ai-quick-actions">
+          <button class="chip-btn" data-prompt="Resume esta página em 5 pontos principais em português.">📝 Resumir</button>
+          <button class="chip-btn" data-prompt="Explica o conteúdo desta página de forma simples.">💡 Explicar</button>
+          <button class="chip-btn" data-prompt="Traduz os pontos principais desta página para português.">🌍 Traduzir PT</button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="ai-messages" id="aiMessages">
+          <div class="ai-msg assistant">
+            Olá! Sou o <strong>WIPRD AI</strong>. Escolhe o teu modelo de IA acima e pergunta-me qualquer coisa sobre a página que tens aberta.
+          </div>
+        </div>
+
+        <!-- Chat Input -->
+        <form class="ai-input-form" id="aiForm">
+          <input
+            type="text"
+            id="aiPromptInput"
+            class="ai-prompt-input"
+            placeholder="Pergunta sobre esta página..."
+            autocomplete="off"
+          />
+          <button type="submit" class="ai-send-btn">Enviar</button>
+        </form>
+      </aside>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

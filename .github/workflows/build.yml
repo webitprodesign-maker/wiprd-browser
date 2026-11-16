@@ -1,0 +1,46 @@
+name: Build WIPRD Browser (macOS & Windows)
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build macOS installer
+        if: matrix.os == 'macos-latest'
+        run: npm run build:mac
+
+      - name: Build Windows installer
+        if: matrix.os == 'windows-latest'
+        run: npm run build:win
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: wiprd-browser-${{ matrix.os }}
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/*.exe
+          if-no-files-found: error
